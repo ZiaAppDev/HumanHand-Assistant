@@ -16,6 +16,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.humanhand.offlineassistant.R;
+import com.humanhand.offlineassistant.ui.FloatingMicOverlay;
 import com.humanhand.offlineassistant.voice.CommandParser;
 import com.humanhand.offlineassistant.voice.VoiceRecognitionManager;
 
@@ -30,6 +31,7 @@ public class ForegroundVoiceService extends Service implements RecognitionListen
     private VoiceRecognitionManager voiceManager;
     private TextToSpeech tts;
     private CommandParser.Command pendingCommand;
+    private FloatingMicOverlay micOverlay;
 
     private boolean isListening = false;
 
@@ -39,10 +41,12 @@ public class ForegroundVoiceService extends Service implements RecognitionListen
             if (isListening) {
                 voiceManager.stopListening();
                 isListening = false;
+                if (micOverlay != null) micOverlay.stopBlinking();
                 speak("Stopped listening.");
             } else {
                 voiceManager.startListening(ForegroundVoiceService.this);
                 isListening = true;
+                if (micOverlay != null) micOverlay.startBlinking();
                 speak("How can I help?");
             }
         }
@@ -54,6 +58,8 @@ public class ForegroundVoiceService extends Service implements RecognitionListen
         createNotificationChannel();
         voiceManager = new VoiceRecognitionManager(this);
         tts = new TextToSpeech(this, this);
+        micOverlay = new FloatingMicOverlay(this);
+        micOverlay.show();
         registerReceiver(toggleReceiver, new android.content.IntentFilter("com.humanhand.TOGGLE_LISTENING"));
     }
 
@@ -120,6 +126,7 @@ public class ForegroundVoiceService extends Service implements RecognitionListen
             case GO_BACK: actionText = "go back"; break;
             case HOME: actionText = "go home"; break;
             case RECENTS: actionText = "show recent apps"; break;
+            case TYPE: actionText = "type: " + cmd.target; break;
         }
         speak("I am about to " + actionText + ". Should I proceed? Say Confirm or Cancel.");
     }
@@ -166,10 +173,16 @@ public class ForegroundVoiceService extends Service implements RecognitionListen
 
     @Override
     public void onDestroy() {
+        if (micOverlay != null) {
+            micOverlay.hide();
+        }
         if (voiceManager != null) voiceManager.destroy();
         if (tts != null) {
             tts.stop();
             tts.shutdown();
+        }
+        if (toggleReceiver != null) {
+            unregisterReceiver(toggleReceiver);
         }
         super.onDestroy();
     }

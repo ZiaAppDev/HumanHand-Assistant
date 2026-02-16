@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -75,6 +76,9 @@ public class HumanHandAccessibilityService extends AccessibilityService {
             case RECENTS:
                 performGlobalAction(GLOBAL_ACTION_RECENTS);
                 break;
+            case TYPE:
+                typeText(target);
+                break;
         }
     }
 
@@ -113,6 +117,23 @@ public class HumanHandAccessibilityService extends AccessibilityService {
             if (clickableNode != null && clickableNode != node) clickableNode.recycle();
         } else {
             Log.d(TAG, "Node not found for text: " + text);
+        }
+        rootNode.recycle();
+    }
+
+    private void typeText(String text) {
+        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+        if (rootNode == null) return;
+
+        AccessibilityNodeInfo focusedNode = rootNode.findFocus(AccessibilityNodeInfo.FOCUS_INPUT);
+        if (focusedNode != null) {
+            Bundle arguments = new Bundle();
+            arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
+            focusedNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+            Log.d(TAG, "Typed text into focused node: " + text);
+            focusedNode.recycle();
+        } else {
+            Log.d(TAG, "No focused input node found to type into");
         }
         rootNode.recycle();
     }

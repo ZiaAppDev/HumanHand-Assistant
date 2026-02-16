@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class CommandParser {
     public enum ActionType {
-        OPEN_APP, CLICK, SCROLL, GO_BACK, HOME, RECENTS, UNKNOWN
+        OPEN_APP, CLICK, SCROLL, GO_BACK, HOME, RECENTS, TYPE, UNKNOWN
     }
 
     public static class Command {
@@ -60,6 +60,10 @@ public class CommandParser {
             return new Command(ActionType.RECENTS);
         }
         
+        if (text.startsWith("type ")) {
+            return new Command(ActionType.TYPE, text.substring(5).trim());
+        }
+
         return new Command(ActionType.UNKNOWN, null);
     }
 }

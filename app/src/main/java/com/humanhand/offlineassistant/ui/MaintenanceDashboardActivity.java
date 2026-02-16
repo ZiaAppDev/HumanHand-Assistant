@@ -24,13 +24,44 @@ public class MaintenanceDashboardActivity extends AppCompatActivity {
         Button btnStartService = findViewById(R.id.btn_start_service);
         Button btnAccessibility = findViewById(R.id.btn_accessibility_settings);
         TextView tvModelStatus = findViewById(R.id.tv_model_status);
+        Button btnSamsungOptimize = findViewById(R.id.btn_samsung_optimize);
+        Button btnSamsungBattery = findViewById(R.id.btn_samsung_battery);
 
         btnClearCache.setOnClickListener(v -> clearAppCache());
         btnOptimizeRam.setOnClickListener(v -> optimizeRam());
         btnStartService.setOnClickListener(v -> startVoiceService());
         btnAccessibility.setOnClickListener(v -> openAccessibilitySettings());
+        btnSamsungOptimize.setOnClickListener(v -> openSamsungDeviceCare());
+        btnSamsungBattery.setOnClickListener(v -> openSamsungBatterySettings());
 
         checkModelStatus(tvModelStatus);
+    }
+
+    private void openSamsungDeviceCare() {
+        try {
+            Intent intent = new Intent();
+            intent.setClassName("com.samsung.android.lool", "com.samsung.android.sm.ui.IndexActivity");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            try {
+                Intent intent = getPackageManager().getLaunchIntentForPackage("com.samsung.android.lool");
+                startActivity(intent);
+            } catch (Exception e2) {
+                Toast.makeText(this, "Samsung Device Care not found", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void openSamsungBatterySettings() {
+        try {
+            Intent intent = new Intent();
+            intent.setClassName("com.samsung.android.lool", "com.samsung.android.sm.ui.battery.BatteryActivity");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "Battery settings not found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void openAccessibilitySettings() {

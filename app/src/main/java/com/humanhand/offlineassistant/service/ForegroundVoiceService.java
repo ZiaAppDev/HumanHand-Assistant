@@ -131,6 +131,8 @@ public class ForegroundVoiceService extends Service implements RecognitionListen
             case TOGGLE_WIFI: actionText = "toggle WiFi"; break;
             case TOGGLE_FLASHLIGHT: actionText = "toggle Flashlight"; break;
             case TOGGLE_SPEAKER: actionText = "toggle Speaker"; break;
+            case SAMSUNG_OPTIMIZE: actionText = "optimize your phone"; break;
+            case SAMSUNG_BATTERY: actionText = "check battery settings"; break;
         }
         speak("I am about to " + actionText + ". Should I proceed? Say Confirm or Cancel.");
     }

@@ -6,7 +6,8 @@ import java.util.regex.Pattern;
 public class CommandParser {
     public enum ActionType {
         OPEN_APP, CLICK, SCROLL, GO_BACK, HOME, RECENTS, TYPE, CALL, 
-        TOGGLE_WIFI, TOGGLE_FLASHLIGHT, TOGGLE_SPEAKER, UNKNOWN
+        TOGGLE_WIFI, TOGGLE_FLASHLIGHT, TOGGLE_SPEAKER, 
+        SAMSUNG_OPTIMIZE, SAMSUNG_BATTERY, UNKNOWN
     }
 
     public static class Command {
@@ -69,8 +70,12 @@ public class CommandParser {
             return new Command(ActionType.TOGGLE_FLASHLIGHT);
         }
 
-        if (text.contains("speaker")) {
-            return new Command(ActionType.TOGGLE_SPEAKER);
+        if (text.contains("optimize") || text.contains("clean phone")) {
+            return new Command(ActionType.SAMSUNG_OPTIMIZE);
+        }
+
+        if (text.contains("battery")) {
+            return new Command(ActionType.SAMSUNG_BATTERY);
         }
 
         return new Command(ActionType.UNKNOWN, null);

@@ -95,6 +95,12 @@ public class HumanHandAccessibilityService extends AccessibilityService {
             case TOGGLE_SPEAKER:
                 toggleSpeaker();
                 break;
+            case SAMSUNG_OPTIMIZE:
+                openSamsungDeviceCare();
+                break;
+            case SAMSUNG_BATTERY:
+                openSamsungBatterySettings();
+                break;
         }
     }
 
@@ -197,6 +203,29 @@ public class HumanHandAccessibilityService extends AccessibilityService {
             am.setSpeakerphoneOn(!isOn);
             Log.d(TAG, "Speaker toggled to " + !isOn);
         }
+    }
+
+    private void openSamsungDeviceCare() {
+        try {
+            Intent intent = new Intent();
+            intent.setClassName("com.samsung.android.lool", "com.samsung.android.sm.ui.IndexActivity");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            try {
+                Intent intent = getPackageManager().getLaunchIntentForPackage("com.samsung.android.lool");
+                startActivity(intent);
+            } catch (Exception ignored) {}
+        }
+    }
+
+    private void openSamsungBatterySettings() {
+        try {
+            Intent intent = new Intent();
+            intent.setClassName("com.samsung.android.lool", "com.samsung.android.sm.ui.battery.BatteryActivity");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception ignored) {}
     }
 
     private void showExecutionIndicator(int x, int y) {

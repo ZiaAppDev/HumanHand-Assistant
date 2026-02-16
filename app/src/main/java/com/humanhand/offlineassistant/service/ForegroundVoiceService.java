@@ -4,7 +4,10 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
@@ -28,18 +31,35 @@ public class ForegroundVoiceService extends Service implements RecognitionListen
     private TextToSpeech tts;
     private CommandParser.Command pendingCommand;
 
+    private boolean isListening = false;
+
+    private final BroadcastReceiver toggleReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (isListening) {
+                voiceManager.stopListening();
+                isListening = false;
+                speak("Stopped listening.");
+            } else {
+                voiceManager.startListening(ForegroundVoiceService.this);
+                isListening = true;
+                speak("How can I help?");
+            }
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
         voiceManager = new VoiceRecognitionManager(this);
         tts = new TextToSpeech(this, this);
+        registerReceiver(toggleReceiver, new android.content.IntentFilter("com.humanhand.TOGGLE_LISTENING"));
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startForeground(1, buildNotification("Listening for commands..."));
-        voiceManager.startListening(this);
+        startForeground(1, buildNotification("Ready..."));
         return START_STICKY;
     }
 
@@ -97,6 +117,9 @@ public class ForegroundVoiceService extends Service implements RecognitionListen
             case OPEN_APP: actionText = "open " + cmd.target; break;
             case CLICK: actionText = "click " + cmd.target; break;
             case SCROLL: actionText = "scroll " + cmd.direction; break;
+            case GO_BACK: actionText = "go back"; break;
+            case HOME: actionText = "go home"; break;
+            case RECENTS: actionText = "show recent apps"; break;
         }
         speak("I am about to " + actionText + ". Should I proceed? Say Confirm or Cancel.");
     }
@@ -106,11 +129,11 @@ public class ForegroundVoiceService extends Service implements RecognitionListen
             // Send broadcast to Accessibility Service
             Intent intent = new Intent("com.humanhand.ACTION_COMMAND");
             intent.putExtra("action", pendingCommand.action.name());
-            intent.putExtra("target", pendingCommand.target);
-            intent.putExtra("direction", pendingCommand.direction);
+            if (pendingCommand.target != null) intent.putExtra("target", pendingCommand.target);
+            if (pendingCommand.direction != null) intent.putExtra("direction", pendingCommand.direction);
             sendBroadcast(intent);
             
-            speak("Executing " + pendingCommand.action.name());
+            speak("Executing " + pendingCommand.action.name().replace("_", " ").toLowerCase());
             pendingCommand = null;
         }
     }

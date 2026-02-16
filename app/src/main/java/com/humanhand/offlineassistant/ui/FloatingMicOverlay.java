@@ -1,6 +1,7 @@
 package com.humanhand.offlineassistant.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.view.Gravity;
@@ -44,7 +45,8 @@ public class FloatingMicOverlay {
         
         ImageView micButton = overlayView.findViewById(R.id.mic_button);
         micButton.setOnClickListener(v -> {
-            // Signal service to start listening or show animation
+            Intent intent = new Intent("com.humanhand.TOGGLE_LISTENING");
+            context.sendBroadcast(intent);
         });
 
         windowManager.addView(overlayView, params);

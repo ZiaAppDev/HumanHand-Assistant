@@ -2,6 +2,7 @@ package com.humanhand.offlineassistant.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
+import android.os.Build;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -107,10 +108,11 @@ public class HumanHandAccessibilityService extends AccessibilityService {
         }
     }
 
-    private void findAndClick(String text) {
+    private boolean findAndClick(String text) {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        if (rootNode == null) return;
+        if (rootNode == null) return false;
 
+        boolean success = false;
         List<AccessibilityNodeInfo> nodes = rootNode.findAccessibilityNodeInfosByText(text);
         if (nodes != null && !nodes.isEmpty()) {
             AccessibilityNodeInfo node = nodes.get(0);
@@ -120,13 +122,14 @@ public class HumanHandAccessibilityService extends AccessibilityService {
             }
 
             if (clickableNode != null) {
-                clickableNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                success = clickableNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 Log.d(TAG, "Clicked on: " + text);
             } else {
                 Rect rect = new Rect();
                 node.getBoundsInScreen(rect);
                 performTap(rect.centerX(), rect.centerY());
                 Log.d(TAG, "Tapped coordinates for: " + text);
+                success = true;
             }
             node.recycle();
             if (clickableNode != null && clickableNode != node) clickableNode.recycle();
@@ -134,6 +137,7 @@ public class HumanHandAccessibilityService extends AccessibilityService {
             Log.d(TAG, "Node not found for text: " + text);
         }
         rootNode.recycle();
+        return success;
     }
 
     private void typeText(String text) {
@@ -174,7 +178,7 @@ public class HumanHandAccessibilityService extends AccessibilityService {
     }
 
     private void toggleFlashlight() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             CameraManager cm = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
             try {
                 String cameraId = cm.getCameraIdList()[0];

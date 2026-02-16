@@ -56,7 +56,7 @@ public class MaintenanceDashboardActivity extends AppCompatActivity {
 
     private void startVoiceService() {
         Intent intent = new Intent(this, com.humanhand.offlineassistant.service.ForegroundVoiceService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             startForegroundService(intent);
         } else {
             startService(intent);

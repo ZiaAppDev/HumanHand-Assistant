@@ -72,7 +72,7 @@ public class MaintenanceDashboardActivity extends AppCompatActivity {
 
     private void checkModelStatus(TextView tv) {
         try {
-            String[] assets = getAssets().list("model-en-us");
+            String[] assets = getAssets().list("vosk-model-small-en-us-0.15");
             if (assets != null && assets.length > 0) {
                 tv.setText("Model Status: Ready (Offline)");
                 tv.setTextColor(0xFF4CAF50); // Green

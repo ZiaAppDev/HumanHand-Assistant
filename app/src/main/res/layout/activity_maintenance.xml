@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Human-Hand Assistant Dashboard"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:id="@+id/btn_clear_cache"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clear Cache"/>
+
+    <Button
+        android:id="@+id/btn_optimize_ram"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Optimize RAM"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

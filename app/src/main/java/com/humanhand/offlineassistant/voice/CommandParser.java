@@ -5,7 +5,8 @@ import java.util.regex.Pattern;
 
 public class CommandParser {
     public enum ActionType {
-        OPEN_APP, CLICK, SCROLL, GO_BACK, HOME, RECENTS, TYPE, UNKNOWN
+        OPEN_APP, CLICK, SCROLL, GO_BACK, HOME, RECENTS, TYPE, CALL, 
+        TOGGLE_WIFI, TOGGLE_FLASHLIGHT, TOGGLE_SPEAKER, UNKNOWN
     }
 
     public static class Command {
@@ -60,8 +61,16 @@ public class CommandParser {
             return new Command(ActionType.RECENTS);
         }
         
-        if (text.startsWith("type ")) {
-            return new Command(ActionType.TYPE, text.substring(5).trim());
+        if (text.contains("wifi")) {
+            return new Command(ActionType.TOGGLE_WIFI);
+        }
+
+        if (text.contains("flashlight") || text.contains("torch")) {
+            return new Command(ActionType.TOGGLE_FLASHLIGHT);
+        }
+
+        if (text.contains("speaker")) {
+            return new Command(ActionType.TOGGLE_SPEAKER);
         }
 
         return new Command(ActionType.UNKNOWN, null);

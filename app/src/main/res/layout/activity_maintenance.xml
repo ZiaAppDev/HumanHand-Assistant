@@ -9,22 +9,72 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Human-Hand Assistant Dashboard"
-        android:textSize="20sp"
+        android:text="Human-Hand Control Center"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:layout_marginBottom="32dp"/>
+        android:textColor="#2196F3"
+        android:layout_marginBottom="24dp"/>
 
     <Button
-        android:id="@+id/btn_clear_cache"
+        android:id="@+id/btn_accessibility_settings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Clear Cache"/>
+        android:text="1. Master Switch (Enable Accessibility)"
+        android:backgroundTint="#FF9800"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_model_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Model Status: Checking..."
+        android:textSize="14sp"
+        android:layout_marginBottom="16dp"/>
 
     <Button
-        android:id="@+id/btn_optimize_ram"
+        android:id="@+id/btn_start_service"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Optimize RAM"
-        android:layout_marginTop="16dp"/>
+        android:text="2. Start Assistant Overlay"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#DDDDDD"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="System Maintenance"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+        <Button
+            android:id="@+id/btn_clear_cache"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Clear Cache"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btn_optimize_ram"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Optimize RAM"
+            android:layout_marginStart="4dp"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -10,6 +10,9 @@ import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.hardware.camera2.CameraManager;
+import android.media.AudioManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -79,6 +82,18 @@ public class HumanHandAccessibilityService extends AccessibilityService {
             case TYPE:
                 typeText(target);
                 break;
+            case CALL:
+                makeCall(target);
+                break;
+            case TOGGLE_WIFI:
+                toggleWifi();
+                break;
+            case TOGGLE_FLASHLIGHT:
+                toggleFlashlight();
+                break;
+            case TOGGLE_SPEAKER:
+                toggleSpeaker();
+                break;
         }
     }
 
@@ -136,6 +151,48 @@ public class HumanHandAccessibilityService extends AccessibilityService {
             Log.d(TAG, "No focused input node found to type into");
         }
         rootNode.recycle();
+    }
+
+    private void makeCall(String contactName) {
+        // Step 1: Try to find and click the contact name (in WhatsApp or Dialer)
+        if (!findAndClick(contactName)) {
+            // Step 2: Fallback - Open Dialer for manual confirmation if name not found
+            Log.d(TAG, "Contact not found on screen, opening dialer for " + contactName);
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+    }
+
+    private void toggleWifi() {
+        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wm != null) {
+            boolean isEnabled = wm.isWifiEnabled();
+            wm.setWifiEnabled(!isEnabled);
+            Log.d(TAG, "WiFi toggled to " + !isEnabled);
+        }
+    }
+
+    private void toggleFlashlight() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            CameraManager cm = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+            try {
+                String cameraId = cm.getCameraIdList()[0];
+                cm.setTorchMode(cameraId, true); // For now just turn it ON, can be refined to toggle
+                Log.d(TAG, "Flashlight turned ON");
+            } catch (Exception e) {
+                Log.e(TAG, "Flashlight error", e);
+            }
+        }
+    }
+
+    private void toggleSpeaker() {
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (am != null) {
+            boolean isOn = am.isSpeakerphoneOn();
+            am.setSpeakerphoneOn(!isOn);
+            Log.d(TAG, "Speaker toggled to " + !isOn);
+        }
     }
 
     private void showExecutionIndicator(int x, int y) {

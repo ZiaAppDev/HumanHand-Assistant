@@ -127,6 +127,10 @@ public class ForegroundVoiceService extends Service implements RecognitionListen
             case HOME: actionText = "go home"; break;
             case RECENTS: actionText = "show recent apps"; break;
             case TYPE: actionText = "type: " + cmd.target; break;
+            case CALL: actionText = "call " + cmd.target; break;
+            case TOGGLE_WIFI: actionText = "toggle WiFi"; break;
+            case TOGGLE_FLASHLIGHT: actionText = "toggle Flashlight"; break;
+            case TOGGLE_SPEAKER: actionText = "toggle Speaker"; break;
         }
         speak("I am about to " + actionText + ". Should I proceed? Say Confirm or Cancel.");
     }

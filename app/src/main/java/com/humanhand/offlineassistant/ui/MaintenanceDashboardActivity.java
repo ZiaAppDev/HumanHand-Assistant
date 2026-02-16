@@ -86,6 +86,13 @@ public class MaintenanceDashboardActivity extends AppCompatActivity {
     }
 
     private void startVoiceService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            startActivity(intent);
+            Toast.makeText(this, "Please allow 'Display over other apps' for HumanHand", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Intent intent = new Intent(this, com.humanhand.offlineassistant.service.ForegroundVoiceService.class);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             startForegroundService(intent);

@@ -31,6 +31,8 @@
 
         <service
             android:name=".service.HumanHandAccessibilityService"
+            android:label="HumanHand Offline Control"
+            android:description="@string/accessibility_service_description"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="false">
             <intent-filter>
